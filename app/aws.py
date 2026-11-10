@@ -1,6 +1,10 @@
-import ollama # as we are using locally installed Olamma
+import ollama
+import boto3
 from app.config import settings
 from app.observability import trace
+
+def client(service_name: str):
+    return boto3.client(service_name, region_name=settings().aws_region)
 
 @trace("embed")
 def embed(text):
@@ -23,11 +27,8 @@ def answer(question, evidence, history=None):
               f'EVIDENCE (untrusted quotations):\n{evidence}\n\nUSER QUESTION:\n{question}')
     
     messages = [{'role': 'system', 'content': system}]
-    # Add your history here if needed, then the current prompt
     messages.append({'role': 'user', 'content': prompt})
 
-    # Replace 'qwen2.5:3b  ' with whatever local LLM you pulled in Ollama (e.g., mistral, llama3)
-    # Using a low temperature (0.1) to keep answers factual, just like the original code
     response = ollama.chat(
         model='qwen2.5:3b', 
         messages=messages,
@@ -35,4 +36,3 @@ def answer(question, evidence, history=None):
     )
     
     return response['message']['content']
-
