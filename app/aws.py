@@ -1,7 +1,11 @@
 import ollama
 import boto3
+from groq import Groq
 from app.config import settings
 from app.observability import trace
+
+# Initialize the Groq client
+groq_client = Groq(api_key=settings().groq_api_key)
 
 def client(service_name: str):
     return boto3.client(service_name, region_name=settings().aws_region)
@@ -29,10 +33,10 @@ def answer(question, evidence, history=None):
     messages = [{'role': 'system', 'content': system}]
     messages.append({'role': 'user', 'content': prompt})
 
-    response = ollama.chat(
-        model='qwen2.5:3b', 
+    response = groq_client.chat.completions.create(
+        model='llama3-8b-8192', 
         messages=messages,
         options={'temperature': 0.1, 'num_predict': 750}
     )
     
-    return response['message']['content']
+    return response.choices[0].message.content

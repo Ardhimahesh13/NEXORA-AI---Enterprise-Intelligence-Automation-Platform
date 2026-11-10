@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     pinecone_ready_timeout:int=180
     min_relevance:float=0.25
     hitl_enabled:bool=True
+    groq_api_key:str=''
     memory_turns:int=6
 
 @lru_cache
