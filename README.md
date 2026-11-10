@@ -298,11 +298,11 @@ Example deployment commands executed **on the EC2 runner**:
 ```bash
 # IMAGE is the full image URI produced by the build job.
 docker pull "$IMAGE"
-docker rm -f atlas-enterprise-ai || true
+docker rm -f nexora-enterprise-ai || true
 docker run -d \
-  --name atlas-enterprise-ai \
+  --name nexora-enterprise-ai \
   --restart unless-stopped \
-  --env-file /opt/atlas/.env \
+  --env-file /opt/nexora/.env \
   -p 8000:8000 \
   "$IMAGE"
 ```
@@ -313,7 +313,7 @@ docker run -d \
 
 ```bash
 docker ps
-docker logs --tail 100 atlas-enterprise-ai
+docker logs --tail 100 nexora-enterprise-ai
 curl --fail http://127.0.0.1:8000/health/live
 curl --fail http://127.0.0.1:8000/health/ready
 ```
