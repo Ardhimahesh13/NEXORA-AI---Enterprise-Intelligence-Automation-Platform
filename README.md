@@ -2,6 +2,10 @@
 
 NEXORA-AI is a privacy-focused enterprise intelligence platform that leverages local Large Language Models (LLMs) to automate and enhance business intelligence tasks. Built with a high-performance FastAPI backend, a Streamlit user interface, and Pinecone vector search, the platform uses local Qwen models and Nomic embeddings via Ollama to ensure complete data privacy and security without relying on external API dependencies.
 
+**Document intelligence · Conversational memory · Guardrails · Human review · Observability · CI/CD**
+
+[Overview](#overview) · [Architecture](#architecture) · [Quick Start](#quick-start) · [CI/CD Deployment](#cicd-deployment-to-aws) · [API](#api-reference) · [Security](#security-and-production-readiness)
+
 ## 🚀 Key Features
 
 * **Privacy-First Architecture:** Utlizes local LLMs (Qwen) and embedding models (nomic-embed-text) running via Ollama.
