@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Nexora-AI Enterprise RAG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/static/styles.css">
+<script>
+  /* apply saved or system theme before first paint to avoid a flash */
+  (function(){var t=null;try{t=localStorage.getItem('nexora.theme')}catch(e){}
+  if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  document.documentElement.dataset.theme=t})();
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+<symbol id="doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="chart" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></symbol>
+<symbol id="up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+<symbol id="like" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></symbol>
+<symbol id="dislike" viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.7a2 2 0 0 0-2 1.7l-1.4 9a2 2 0 0 0 2 2.3zm7-13h2.7A2.3 2.3 0 0 1 22 4v7a2.3 2.3 0 0 1-2.3 2H17"/></symbol>
+<symbol id="copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+<symbol id="cloud" viewBox="0 0 24 24"><path d="M16 16l-4-4-4 4M12 12v9"/><path d="M20.4 18.4A5 5 0 0 0 18 9h-1.3A8 8 0 1 0 3 16.3"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+<symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></symbol>
+<symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></symbol>
+<symbol id="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></symbol>
+</defs></svg>
+
+<div class="app">
+  <aside class="side glass">
+    <div class="brand"><div class="logo"><svg class="i"><use href="#globe"/></svg></div><div><b>Nexora-AI</b><small>Enterprise RAG</small></div></div>
+    <nav class="nav" aria-label="Sections">
+      <button data-v="chat"><svg class="i"><use href="#chat"/></svg>Chat</button>
+      <button data-v="documents"><svg class="i"><use href="#doc"/></svg>Documents</button>
+      <button data-v="approvals"><svg class="i"><use href="#shield"/></svg>Approvals<span class="badge" id="badge" hidden></span></button>
+      <button data-v="insights"><svg class="i"><use href="#chart"/></svg>Insights</button>
+    </nav>
+    <div class="side-note">Press <b>/</b> anywhere to start a new question.</div>
+  </aside>
+
+  <main class="main glass">
+    <header class="top">
+      <div><h1 id="title"></h1><p id="sub"></p></div>
+      <div class="pills">
+        <span class="pill" id="health"><i class="dot"></i><span>Checking</span></span>
+        <span class="pill x"><svg class="i" style="width:14px;height:14px"><use href="#globe"/></svg>{{ region }}</span>
+        <span class="pill x">{{ mode }}</span>
+        <button class="btn" id="newChat"><svg class="i"><use href="#plus"/></svg>New chat</button>
+        <button class="icon-btn" id="theme" aria-label="Switch theme"><svg class="i" id="themeIcon"><use href="#moon"/></svg></button>
+      </div>
+    </header>
+
+    <section class="view" id="v-chat">
+      <div class="msgs" id="msgs"><div class="thread" id="thread">
+        <div class="empty" id="empty">
+          <div class="logo"><svg class="i"><use href="#globe"/></svg></div>
+          <h2>Ask your documents</h2>
+          <p>Answers come from files uploaded to this workspace, with sources shown beside each one.</p>
+          <div class="chips">
+            <button class="btn" data-q="Summarize my most recent document">Summarize my latest document</button>
+            <button class="btn" data-q="List the key deadlines across my documents">Find key deadlines</button>
+            <button class="btn" data-q="What does our policy say about remote work?">Check a policy</button>
+          </div>
+        </div>
+      </div></div>
+      <form class="composer" id="form">
+        <div class="box">
+          <textarea id="input" rows="1" maxlength="2000" placeholder="Ask a question" aria-label="Question"></textarea>
+          <button class="send" id="send" aria-label="Send"><svg class="i"><use href="#up"/></svg></button>
+        </div>
+        <p class="hint">Enter to send, Shift+Enter for a new line</p>
+      </form>
+    </section>
+
+    <section class="view scroll" id="v-documents"><div class="wrap">
+      <label class="drop" id="drop"><svg class="i"><use href="#cloud"/></svg><b>Drop files here or choose files</b><span>PDF, DOCX, TXT or MD</span>
+        <input type="file" id="file" multiple accept=".pdf,.docx,.txt,.md" hidden></label>
+      <div class="q" id="queue"></div>
+      <div class="card">
+        <div class="row"><h3>Library</h3>
+          <div class="acts"><label class="search"><svg class="i" style="width:15px;height:15px"><use href="#search"/></svg><input id="q" placeholder="Search" aria-label="Search documents"></label>
+          <button class="btn" id="refresh">Refresh</button></div></div>
+        <div class="tw"><table><thead><tr><th>Name</th><th>Status</th><th>Version</th><th>Access</th><th>Added</th></tr></thead><tbody id="docs"></tbody></table></div>
+      </div>
+    </div></section>
+
+    <section class="view scroll" id="v-approvals"><div class="wrap"><div class="card" id="appr"></div></div></section>
+    <section class="view scroll" id="v-insights"><div class="wrap"><div class="grid" id="ins"></div></div></section>
+  </main>
+</div>
+<script src="/static/app.js" defer></script>
+</body>
+</html>
