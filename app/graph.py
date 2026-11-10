@@ -35,7 +35,9 @@ def route(s): return 'generate' if s['passages'] else 'no_evidence'
 
 
 @trace("no_evidence")
-def no_evidence(s): return {'answer':'I could not find supporting evidence in documents you are authorized to access.','status':'no_evidence'}
+def no_evidence(s): 
+    return {'answer':"Hello! I am Nexora-AI. It looks like I don't have any authorized documents matching your question yet. Please upload some files in the Documents tab so I can help you analyze them!.",
+            'status':'no_evidence'}
 
 
 
