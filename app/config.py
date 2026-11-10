@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     min_relevance:float=0.25
     hitl_enabled:bool=True
     groq_api_key:str=''
+    cohere_api_key:str=''
     memory_turns:int=6
 
 @lru_cache

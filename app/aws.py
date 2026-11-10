@@ -1,11 +1,13 @@
-import ollama
+
 import boto3
 from groq import Groq
+import cohere
 from app.config import settings
 from app.observability import trace
 
 # Initialize the Groq client
 groq_client = Groq(api_key=settings().groq_api_key)
+co_client = cohere.Client(api_key=settings().cohere_api_key)
 
 def client(service_name: str):
     return boto3.client(service_name, region_name=settings().aws_region)
@@ -13,11 +15,12 @@ def client(service_name: str):
 @trace("embed")
 def embed(text):
     # Using nomic-embed-text via local Ollama
-    response = ollama.embeddings(
-        model='nomic-embed-text', 
-        prompt=text
+    response = co_client.embed(
+        texts=[text],
+        model='embed-english-v3.0',
+        input_type='search_document'
     )
-    return response['embedding']
+    return response.embeddings[0]
 
 @trace("answer")
 def answer(question, evidence, history=None):
@@ -34,9 +37,10 @@ def answer(question, evidence, history=None):
     messages.append({'role': 'user', 'content': prompt})
 
     response = groq_client.chat.completions.create(
-        model='llama3-8b-8192', 
+        model='openai/gpt-oss-20b', 
         messages=messages,
-        options={'temperature': 0.1, 'num_predict': 750}
+        temperature=0.1,
+        max_tokens=750
     )
     
     return response.choices[0].message.content
