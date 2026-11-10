@@ -35,3 +35,4 @@ def answer(question, evidence, history=None):
     )
     
     return response['message']['content']
+

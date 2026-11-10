@@ -24,3 +24,4 @@ class Settings(BaseSettings):
 @lru_cache
 def settings() -> Settings :
     return Settings()
+
