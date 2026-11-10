@@ -1,6 +1,13 @@
 # NEXORA-AI: Enterprise Intelligence Automation Platform
 
-NEXORA-AI is a privacy-focused enterprise intelligence platform that leverages local Large Language Models (LLMs) to automate and enhance business intelligence tasks. Built with a high-performance FastAPI backend, a Streamlit user interface, and Pinecone vector search, the platform uses local Qwen models and Nomic embeddings via Ollama to ensure complete data privacy and security without relying on external API dependencies.
+## Overview
+
+**Nexora Enterprise AI** is a full-stack, educational enterprise knowledge assistant that answers natural-language questions over uploaded organizational documents using retrieval-augmented generation (RAG). It combines a FastAPI backend, LangGraph orchestration, ollama embedding models, Pinecone vector search, and PostgreSQL-backed conversation history with an HTML/CSS/JavaScript interface.
+
+The project demonstrates how to connect document ingestion, grounded question answering, safety checks, human-in-the-loop (HITL) review, operational auditing, and observability into one AI application. It also includes a deployment approach using **Docker, Amazon ECR, Amazon EC2, and GitHub Actions with a self-hosted runner**.
+
+> **Project status:** Teaching/reference implementation. It is **not production-secure as shipped**: the demo identity context is not a real authentication or authorization system, approval decisions do not automatically execute destructive operations, and production-grade availability and rollback controls must be added separately.
+
 
 **Document intelligence · Conversational memory · Guardrails · Human review · Observability · CI/CD**
 
