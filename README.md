@@ -66,7 +66,7 @@ flowchart TD
     U -->|Upload complete| API
     API --> ING[Document ingestion]
     ING -->|Read file| S3
-    ING -->|Create embeddings| [cohera]
+    ING -->|Create embeddings|installed [cohera]
     ING -->|Upsert vectors| PC[Pinecone]
     ING --> DB[(Render PostgreSQL)]
 
