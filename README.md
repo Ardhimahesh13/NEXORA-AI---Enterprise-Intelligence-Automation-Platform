@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Nexora Enterprise AI** is a full-stack, educational enterprise knowledge assistant that answers natural-language questions over uploaded organizational documents using retrieval-augmented generation (RAG). It combines a FastAPI backend, LangGraph orchestration, ollama embedding models, Pinecone vector search, and PostgreSQL-backed conversation history with an HTML/CSS/JavaScript interface.
+**Nexora Enterprise AI** is a full-stack, educational enterprise knowledge assistant that answers natural-language questions over uploaded organizational documents using retrieval-augmented generation (RAG). It combines a FastAPI backend, LangGraph orchestration, cohera embedding model, Pinecone vector search, and PostgreSQL-backed conversation history with an HTML/CSS/JavaScript interface.
 
 The project demonstrates how to connect document ingestion, grounded question answering, safety checks, human-in-the-loop (HITL) review, operational auditing, and observability into one AI application. It also includes a deployment approach using **Docker, Amazon ECR, Amazon EC2, and GitHub Actions with a self-hosted runner**.
 
@@ -18,7 +18,7 @@ The project demonstrates how to connect document ingestion, grounded question an
 | Capability | Description |
 | --- | --- |
 | Document ingestion | Browser uploads files directly to private Amazon S3 using presigned URLs; the backend processes and indexes them. |
-| Enterprise RAG | Retrieve relevant chunks from Pinecone and generate grounded answers using locally installed nomic_embed_text(ollama). |
+| Enterprise RAG | Retrieve relevant chunks from Pinecone and generate grounded answers using locally installed cohera. |
 | LangGraph workflow | Coordinate retrieval, generation, guardrail checks, and conversational context. |
 | Conversation memory | Persist chat turns in PostgreSQL and reuse recent history for follow-up questions. |
 | Guardrails | Apply deterministic input/output checks; behavior depends on the implemented rules. |
@@ -36,8 +36,8 @@ The project demonstrates how to connect document ingestion, grounded question an
 | Backend | Python, FastAPI, Uvicorn | APIs and application server |
 | Frontend | HTML, CSS, JavaScript | Browser-based user interface |
 | Orchestration | LangGraph | Stateful RAG workflow |
-| LLM | Amazon Bedrock — Nova Lite | Response generation |
-| Embeddings | nomic_embed_text | Document and query vectors (1,024 dimensions in this project) |
+| LLM | cohera embedding | Response generation |
+| Embeddings | Cohera | Document and query vectors (1,024 dimensions in this project) |
 | Vector database | Pinecone | Semantic retrieval and document chunk indexing |
 | Object storage | Amazon S3 | Original uploaded documents |
 | Relational database | PostgreSQL on Render | Document metadata, conversations, approvals, feedback, audit |
@@ -66,7 +66,7 @@ flowchart TD
     U -->|Upload complete| API
     API --> ING[Document ingestion]
     ING -->|Read file| S3
-    ING -->|Create embeddings| ollama[nomic_embed_text]
+    ING -->|Create embeddings| [cohera]
     ING -->|Upsert vectors| PC[Pinecone]
     ING --> DB[(Render PostgreSQL)]
 
@@ -74,7 +74,7 @@ flowchart TD
     API --> GR[LangGraph RAG + guardrails]
     GR -->|Conversation history| DB
     GR -->|Vector retrieval| PC
-    GR -->|Generate answer| ollama[Nomic_embed_text]
+    GR -->|Generate answer| [cohera]
     GR -->|Answer + sources| API
     API --> U
     API -->|Approvals, feedback, audit| DB
@@ -97,7 +97,7 @@ flowchart LR
     GA -->|Deployment job| RUNNER[Self-hosted GitHub runner on EC2]
     RUNNER -->|Stop old / run new container| EC2
     EC2 --> DOCKER[Docker container: FastAPI + UI]
-    DOCKER --> SERVICES[Bedrock · S3 · Pinecone · PostgreSQL · Rius]
+    DOCKER --> SERVICES[cohera · S3 · Pinecone · PostgreSQL · Rius]
 ```
 
 
@@ -141,7 +141,7 @@ flowchart LR
 
 - Python 3.11+ and pip (use the version compatible with your dependencies)
 - Docker Desktop or Docker Engine for container testing
-- AWS account with access to S3 and the required Ollama embedding models
+- AWS account with access to S3 and the required cohera embedding models
 - Pinecone account and API key
 - PostgreSQL database (the project uses Render)
 - Optional GlassFlow Rius account
@@ -161,8 +161,7 @@ AWS_SECRET_ACCESS_KEY = "Your secret access key"
 AWS_REGION = "us-east-1"
 
 # AWS GENAI EMBEDDING APPLICATION
-BEDROCK_EMBED_MODEL = amazon.titan-embed-text-v2:0
-BEDROCK_CHAT_MODEL = amazon.nova-lite-v1:0
+
 EMBED_DIM = 1024
 
 
@@ -205,9 +204,7 @@ conda activate nexora**
 ## Install dependencies
 **pip install -r requirements.txt**
 
-## Start Local LLMs:
-**ollama pull qwen
-ollama pull nomic-embed-text**
+
 
 ### 5. Initialize PostgreSQL
 
@@ -255,7 +252,7 @@ docker build -t nexora-enterprise-ai:local .
 Run it locally:
 
 ```bash
-docker run --rm --name atlas-enterprise-ai \
+docker run --rm --name nexora-ai \
   --env-file .env -p 8000:8000 nexora-enterprise-ai:local
 ```
 
@@ -424,4 +421,4 @@ Issues and pull requests are welcome where enabled. For substantial changes, des
 
 
 ## 💻 Running the Application
-**uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload**
+ http://16.171.44.16:8000/ 
