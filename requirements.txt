@@ -11,6 +11,6 @@ langgraph>=0.2,<2
 pinecone>=5,<9
 groq
 python-dotenv==1.0.1
-
+cohere
 #  observability 
 glassflow-rius>=1.0,<2.0
