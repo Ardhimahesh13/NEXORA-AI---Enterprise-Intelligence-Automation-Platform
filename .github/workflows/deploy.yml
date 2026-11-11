@@ -18,9 +18,9 @@ jobs:
 
       - name: Deploy and Run Container
         run: |
-          docker rm -f atlas-enterprise-ai || true
+          docker rm -f nexora-ai || true
           docker run -d \
-            --name atlas-enterprise-ai \
+            --name nexora-ai \
             --restart unless-stopped \
             --env-file /home/ubuntu/actions-runner/.env \
             -p 8000:8000 \
